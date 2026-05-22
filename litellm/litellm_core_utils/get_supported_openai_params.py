@@ -52,7 +52,10 @@ def get_supported_openai_params(  # noqa: PLR0915
         provider_config = None
 
     if provider_config and request_type == "chat_completion":
-        return provider_config.get_supported_openai_params(model=base_model or model)
+        effective_model = (
+            base_model if custom_llm_provider == "azure" and base_model else model
+        )
+        return provider_config.get_supported_openai_params(model=effective_model)
 
     if custom_llm_provider == "bedrock":
         return litellm.AmazonConverseConfig().get_supported_openai_params(model=model)
